@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import { NextFontWithVariable } from "next/dist/compiled/@next/font";
+import { NextFont } from "next/dist/compiled/@next/font";
+import { Inter } from "next/font/google";
 import { ReactElement } from "react";
+import "./globals.css";
 
-const geistSans: NextFontWithVariable = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono: NextFontWithVariable = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { cn } from "@/lib/utils";
+
+const inter: NextFont = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,7 +20,7 @@ export default function RootLayout({
 }>): ReactElement {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={cn(inter.className, "min-h-screen antialiased")}>
         {children}
       </body>
     </html>

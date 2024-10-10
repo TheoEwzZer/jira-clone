@@ -6,7 +6,10 @@ export default function Home(): ReactElement {
   return (
     <div>
       <Input />
-      <Button variant="primary" disabled>
+      <Button
+        variant="primary"
+        disabled
+      >
         default
       </Button>
       <Button variant="destructive">destructive</Button>
