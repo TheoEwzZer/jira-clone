@@ -1,27 +1,19 @@
-"use client";
+import { getCurrent } from "@/features/auth/actions";
+import { UserButton } from "@/features/auth/components/user-button";
+import { redirect } from "next/navigation";
+import { Models } from "node-appwrite";
+import { ReactElement } from "react";
 
-import { Button } from "@/components/ui/button";
-import { useCurrent } from "@/features/auth/api/use-current";
-import { useLogout } from "@/features/auth/api/use-logout";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
-import { ReactElement, useEffect } from "react";
+export default async function Home(): Promise<ReactElement> {
+  const user: Models.User<Models.Preferences> | null = await getCurrent();
 
-export default function Home(): ReactElement {
-  const router: AppRouterInstance = useRouter();
-  const { data, isLoading } = useCurrent();
-  const { mutate } = useLogout();
-
-  useEffect((): void => {
-    if (!data && !isLoading) {
-      router.push("/sign-in");
-    }
-  }, [isLoading, data]);
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   return (
     <div>
-      Only visible to authenticated users
-      <Button onClick={(): void => mutate()}>Logout</Button>
+      <UserButton />
     </div>
   );
 }

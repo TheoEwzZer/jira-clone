@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -21,7 +23,7 @@ import { useLogin } from "../api/use-login";
 import { loginSchema } from "../schemas";
 
 export const SignInCard: () => ReactElement = (): ReactElement => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const form: UseFormReturn<
     {
@@ -93,7 +95,7 @@ export const SignInCard: () => ReactElement = (): ReactElement => {
               )}
             />
             <Button
-              disabled={false}
+              disabled={isPending}
               size="lg"
               className="w-full"
             >
@@ -107,7 +109,7 @@ export const SignInCard: () => ReactElement = (): ReactElement => {
       </div>
       <CardContent className="flex flex-col gap-y-4 p-7">
         <Button
-          disabled={false}
+          disabled={isPending}
           variant="secondary"
           size="lg"
           className="w-full"
@@ -116,7 +118,7 @@ export const SignInCard: () => ReactElement = (): ReactElement => {
           Login with Google
         </Button>
         <Button
-          disabled={false}
+          disabled={isPending}
           variant="secondary"
           size="lg"
           className="w-full"
