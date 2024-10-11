@@ -1,12 +1,31 @@
 import { createAdminClient } from "@/lib/appwrite";
+import { AdditionalContext, sessionMiddleware } from "@/lib/session-middleware";
 import { zValidator } from "@hono/zod-validator";
 import { Context, Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { ID } from "node-appwrite";
+import { ID, Models } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
 import { loginSchema, registerSchema } from "../schemas";
 
 const app = new Hono()
+  .get(
+    "/current",
+    sessionMiddleware,
+    async (
+      c: Context<
+        {
+          Bindings: any;
+          Variables: AdditionalContext["Variables"];
+        },
+        "/current",
+        {}
+      >
+    ) => {
+      const user: Models.User<Models.Preferences> = c.get("user");
+
+      return c.json({ data: user });
+    }
+  )
   .post(
     "/login",
     zValidator("json", loginSchema),
@@ -95,10 +114,26 @@ const app = new Hono()
       return c.json({ success: true });
     }
   )
-  .post("/logout", async (c: Context) => {
-    deleteCookie(c, AUTH_COOKIE);
+  .post(
+    "/logout",
+    sessionMiddleware,
+    async (
+      c: Context<
+        {
+          Bindings: any;
+          Variables: AdditionalContext["Variables"];
+        },
+        "/logout",
+        {}
+      >
+    ) => {
+      const account = c.get("account");
 
-    return c.json({ success: true });
-  });
+      deleteCookie(c, AUTH_COOKIE);
+      await account.deleteSession("current");
+
+      return c.json({ success: true });
+    }
+  );
 
 export default app;

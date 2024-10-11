@@ -1,23 +1,27 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ReactElement } from "react";
+import { useCurrent } from "@/features/auth/api/use-current";
+import { useLogout } from "@/features/auth/api/use-logout";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
+import { ReactElement, useEffect } from "react";
 
 export default function Home(): ReactElement {
+  const router: AppRouterInstance = useRouter();
+  const { data, isLoading } = useCurrent();
+  const { mutate } = useLogout();
+
+  useEffect((): void => {
+    if (!data && !isLoading) {
+      router.push("/sign-in");
+    }
+  }, [isLoading, data]);
+
   return (
     <div>
-      <Input />
-      <Button
-        variant="primary"
-        disabled
-      >
-        default
-      </Button>
-      <Button variant="destructive">destructive</Button>
-      <Button variant="outline">outline</Button>
-      <Button variant="secondary">secondary</Button>
-      <Button variant="ghost">ghost</Button>
-      <Button variant="muted">muted</Button>
-      <Button variant="teritary">teritary</Button>
+      Only visible to authenticated users
+      <Button onClick={(): void => mutate()}>Logout</Button>
     </div>
   );
 }
