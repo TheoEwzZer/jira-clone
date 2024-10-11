@@ -8,39 +8,30 @@ import { InferRequestType, InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 import { ClientResponse } from "hono/client";
 import { StatusCode } from "hono/utils/http-status";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-type ResponseType = InferResponseType<typeof client.api.auth.register.$post>;
-type RequestType = InferRequestType<typeof client.api.auth.register.$post>;
+type ResponseType = InferResponseType<typeof client.api.workspaces.$post>;
+type RequestType = InferRequestType<typeof client.api.workspaces.$post>;
 
-export const useRegister: () => UseMutationResult<
+export const useCreateWorkspace: () => UseMutationResult<
   ResponseType,
   Error,
   RequestType,
   unknown
 > = () => {
   const queryClient = useQueryClient();
-  const router: AppRouterInstance = useRouter();
   return useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
       const response: ClientResponse<ResponseType, StatusCode, "json"> =
-        await client.api.auth.register.$post({ json });
-
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
-
+        await client.api.workspaces.$post({ json });
       return await response.json();
     },
     onSuccess: (): void => {
-      toast.success("Registered successfully");
-      router.refresh();
-      queryClient.invalidateQueries({ queryKey: ["current"] });
+      toast.success("Workspace created successfully");
+      queryClient.invalidateQueries({ queryKey: ["workspaces"] });
     },
     onError: (): void => {
-      toast.error("Failed to register");
+      toast.error("Failed to create workspace");
     },
   });
 };
