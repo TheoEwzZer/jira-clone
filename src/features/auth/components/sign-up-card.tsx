@@ -16,32 +16,12 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
-
-const formSchema: z.ZodObject<
-  {
-    name: z.ZodString;
-    email: z.ZodString;
-    password: z.ZodString;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    name: string;
-    email: string;
-    password: string;
-  },
-  {
-    name: string;
-    email: string;
-    password: string;
-  }
-> = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  email: z.string().email().min(1, "Email is required"),
-  password: z.string().min(1, "Password is required"),
-});
+import { useRegister } from "../api/use-register";
+import { registerSchema } from "../schemas";
 
 export const SignUpCard: () => ReactElement = (): ReactElement => {
+  const { mutate } = useRegister();
+
   const form: UseFormReturn<
     {
       name: string;
@@ -50,8 +30,8 @@ export const SignUpCard: () => ReactElement = (): ReactElement => {
     },
     any,
     undefined
-  > = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  > = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -59,10 +39,10 @@ export const SignUpCard: () => ReactElement = (): ReactElement => {
     },
   });
 
-  const onSubmit: (values: z.infer<typeof formSchema>) => void = (
-    values: z.infer<typeof formSchema>
+  const onSubmit: (values: z.infer<typeof registerSchema>) => void = (
+    values: z.infer<typeof registerSchema>
   ): void => {
-    console.log(values);
+    mutate({ json: values });
   };
 
   return (

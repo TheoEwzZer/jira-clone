@@ -17,28 +17,12 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { ReactElement } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
-
-const formSchema: z.ZodObject<
-  {
-    email: z.ZodString;
-    password: z.ZodString;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    email: string;
-    password: string;
-  },
-  {
-    email: string;
-    password: string;
-  }
-> = z.object({
-  email: z.string().email(),
-  password: z.string().min(1, "Password is required"),
-});
+import { useLogin } from "../api/use-login";
+import { loginSchema } from "../schemas";
 
 export const SignInCard: () => ReactElement = (): ReactElement => {
+  const { mutate } = useLogin();
+
   const form: UseFormReturn<
     {
       email: string;
@@ -46,18 +30,18 @@ export const SignInCard: () => ReactElement = (): ReactElement => {
     },
     any,
     undefined
-  > = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  > = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit: (values: z.infer<typeof formSchema>) => void = (
-    values: z.infer<typeof formSchema>
-  ) => {
-    console.log(values);
+  const onSubmit: (values: z.infer<typeof loginSchema>) => void = (
+    values: z.infer<typeof loginSchema>
+  ): void => {
+    mutate({ json: values });
   };
 
   return (
