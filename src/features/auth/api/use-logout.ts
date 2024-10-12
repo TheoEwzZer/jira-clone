@@ -38,6 +38,7 @@ export const useLogout: () => UseMutationResult<
       toast.success("Logged out successfully");
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });
+      queryClient.invalidateQueries({ queryKey: ["workspaces"] });
     },
     onError: (): void => {
       toast.error("Failed to log out");
