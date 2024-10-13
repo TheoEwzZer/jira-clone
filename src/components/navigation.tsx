@@ -1,6 +1,10 @@
+"use client";
+
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { cn } from "@/lib/utils";
 import { LucideProps, SettingsIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ForwardRefExoticComponent, ReactElement, RefAttributes } from "react";
 import {
   GoCheckCircle,
@@ -28,7 +32,7 @@ interface Route {
 const routes: Route[] = [
   {
     label: "Home",
-    href: "/",
+    href: "",
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
@@ -53,10 +57,14 @@ const routes: Route[] = [
 ];
 
 export const Navigation: () => ReactElement = (): ReactElement => {
+  const workspaceId: string = useWorkspaceId();
+  const pathname: string = usePathname();
+
   return (
     <ul>
       {routes.map((item: Route): ReactElement => {
-        const isActive: boolean = false;
+        const fullHref: string = `/workspaces/${workspaceId}${item.href}`;
+        const isActive: boolean = pathname === fullHref;
         const Icon:
           | IconType
           | ForwardRefExoticComponent<
@@ -66,7 +74,7 @@ export const Navigation: () => ReactElement = (): ReactElement => {
         return (
           <Link
             key={item.href}
-            href={item.href}
+            href={fullHref}
           >
             <div
               className={cn(

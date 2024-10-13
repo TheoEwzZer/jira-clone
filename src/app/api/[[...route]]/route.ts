@@ -16,5 +16,9 @@ export const POST: (
   req: Request,
   requestContext: FetchEventLike
 ) => Response | Promise<Response> = handle(app);
+export const PATCH: (
+  req: Request,
+  requestContext: FetchEventLike
+) => Response | Promise<Response> = handle(app);
 
 export type AppType = typeof routes;
