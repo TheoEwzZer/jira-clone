@@ -1,5 +1,5 @@
 import { getCurrent } from "@/features/auth/actions";
-import { CreateWorkspaceForm } from "@/features/workspaces/components/create-workspace-form";
+import { getWorkspaces } from "@/features/workspaces/actions";
 import { redirect } from "next/navigation";
 import { Models } from "node-appwrite";
 import { ReactElement } from "react";
@@ -11,9 +11,11 @@ export default async function Home(): Promise<ReactElement> {
     redirect("/sign-in");
   }
 
-  return (
-    <div className="h-full bg-neutral-500 p-4">
-      <CreateWorkspaceForm />
-    </div>
-  );
+  const workspaces: Models.DocumentList<Models.Document> =
+    await getWorkspaces();
+  if (workspaces.total === 0) {
+    redirect("/workspaces/create");
+  } else {
+    redirect(`/workspaces/${workspaces.documents[0].$id}`);
+  }
 }
