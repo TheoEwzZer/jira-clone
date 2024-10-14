@@ -1,4 +1,5 @@
 import { DATABASE_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config";
+import { createSessionClient } from "@/lib/appwrite";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { Account, Client, Databases, Models, Query } from "node-appwrite";
@@ -10,19 +11,8 @@ export const getWorkspaces: () => Promise<
   Models.DocumentList<Models.Document>
 > = async (): Promise<Models.DocumentList<Models.Document>> => {
   try {
-    const client = new Client()
-      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+    const { databases, account } = await createSessionClient();
 
-    const session: RequestCookie | undefined = cookies().get(AUTH_COOKIE);
-
-    if (!session) {
-      return { documents: [], total: 0 };
-    }
-
-    client.setSession(session.value);
-    const databases = new Databases(client);
-    const account = new Account(client);
     const user: Models.User<Models.Preferences> = await account.get();
 
     const members: Models.DocumentList<Models.Document> =
