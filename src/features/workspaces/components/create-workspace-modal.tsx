@@ -1,11 +1,12 @@
 "use client";
 
 import { ResponsiveModal } from "@/components/responsive-modal";
+import { ReactElement } from "react";
 import { useCreateWorkspaceModal } from "../hooks/use-create-workspace-modal";
 import { CreateWorkspaceForm } from "./create-workspace-form";
 
-export const CreateWorkspaceModal = () => {
-  const { open, isOpen, setIsOpen, close } = useCreateWorkspaceModal();
+export const CreateWorkspaceModal: () => ReactElement = (): ReactElement => {
+  const { isOpen, setIsOpen, close } = useCreateWorkspaceModal();
 
   return (
     <ResponsiveModal

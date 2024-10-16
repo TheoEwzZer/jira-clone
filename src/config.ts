@@ -3,5 +3,7 @@ export const DATABASE_ID: string =
 export const WORKSPACES_ID: string =
   process.env.NEXT_PUBLIC_APPWRITE_WORKSPACES_ID!;
 export const MEMBERS_ID: string = process.env.NEXT_PUBLIC_APPWRITE_MEMBERS_ID!;
+export const PROJECTS_ID: string =
+  process.env.NEXT_PUBLIC_APPWRITE_PROJECTS_ID!;
 export const IMAGES_BUCKET_ID: string =
   process.env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID!;
