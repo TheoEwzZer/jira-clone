@@ -1,9 +1,6 @@
 import { DATABASE_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config";
 import { createSessionClient } from "@/lib/appwrite";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { cookies } from "next/headers";
-import { Account, Client, Databases, Models, Query } from "node-appwrite";
-import { AUTH_COOKIE } from "../auth/constants";
+import { Models, Query } from "node-appwrite";
 import { getMember } from "../members/util";
 import { Workspace } from "./types";
 
@@ -50,19 +47,8 @@ export const getWorkspace: ({
   workspaceId,
 }: GetWorkspaceProps): Promise<Workspace | null> => {
   try {
-    const client = new Client()
-      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+    const { databases, account } = await createSessionClient();
 
-    const session: RequestCookie | undefined = cookies().get(AUTH_COOKIE);
-
-    if (!session) {
-      return null;
-    }
-
-    client.setSession(session.value);
-    const databases = new Databases(client);
-    const account = new Account(client);
     const user: Models.User<Models.Preferences> = await account.get();
 
     const member: Models.Document = await getMember({
@@ -82,6 +68,36 @@ export const getWorkspace: ({
     );
 
     return workspace;
+  } catch {
+    return null;
+  }
+};
+
+interface GetWorkspaceInfoProps {
+  workspaceId: string;
+}
+
+export const getWorkspaceInfo: ({
+  workspaceId,
+}: GetWorkspaceInfoProps) => Promise<{
+  name: string;
+} | null> = async ({
+  workspaceId,
+}: GetWorkspaceInfoProps): Promise<{
+  name: string;
+} | null> => {
+  try {
+    const { databases } = await createSessionClient();
+
+    const workspace: Workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId
+    );
+
+    return {
+      name: workspace.name,
+    };
   } catch {
     return null;
   }
