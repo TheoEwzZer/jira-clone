@@ -3,7 +3,7 @@ import "server-only";
 import { AUTH_COOKIE } from "@/features/auth/constants";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
-import { Account, Client, Databases } from "node-appwrite";
+import { Account, Client, Databases, Users } from "node-appwrite";
 
 export async function createSessionClient(): Promise<{
   readonly account: Account;
@@ -33,6 +33,7 @@ export async function createSessionClient(): Promise<{
 
 export async function createAdminClient(): Promise<{
   readonly account: Account;
+  readonly users: Users;
 }> {
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
@@ -42,6 +43,9 @@ export async function createAdminClient(): Promise<{
   return {
     get account(): Account {
       return new Account(client);
+    },
+    get users(): Users {
+      return new Users(client);
     },
   };
 }
