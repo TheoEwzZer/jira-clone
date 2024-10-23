@@ -1,5 +1,5 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ReactElement, ReactNode } from "react";
-import { useMedia } from "react-use";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Drawer, DrawerContent } from "./ui/drawer";
 
@@ -14,7 +14,7 @@ export const ResponsiveModal: (props: ResponsiveModalProps) => ReactElement = ({
   open,
   onOpenChange,
 }: ResponsiveModalProps): ReactElement => {
-  const isDesktop: boolean = useMedia("(min-width: 1024px)", true);
+  const isDesktop: boolean = useIsMobile();
 
   if (isDesktop) {
     return (
