@@ -23,13 +23,9 @@ const WorkspaceSettingsPage: ({
     redirect("/sign-in");
   }
 
-  const initialValues: Workspace | null = await getWorkspace({
+  const initialValues: Workspace = await getWorkspace({
     workspaceId: params.workspaceId,
   });
-
-  if (!initialValues) {
-    redirect(`/workspaces/${params.workspaceId}`);
-  }
 
   return (
     <div className="w-full lg:max-w-2xl">

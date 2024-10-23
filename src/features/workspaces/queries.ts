@@ -7,34 +7,30 @@ import { Workspace } from "./types";
 export const getWorkspaces: () => Promise<
   Models.DocumentList<Models.Document>
 > = async (): Promise<Models.DocumentList<Models.Document>> => {
-  try {
-    const { databases, account } = await createSessionClient();
+  const { databases, account } = await createSessionClient();
 
-    const user: Models.User<Models.Preferences> = await account.get();
+  const user: Models.User<Models.Preferences> = await account.get();
 
-    const members: Models.DocumentList<Models.Document> =
-      await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
-        Query.equal("userId", user.$id),
-      ]);
+  const members: Models.DocumentList<Models.Document> =
+    await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      Query.equal("userId", user.$id),
+    ]);
 
-    if (members.total === 0) {
-      return { documents: [], total: 0 };
-    }
-
-    const workspacesIds: any[] = members.documents.map(
-      (member: Models.Document): any => member.workspaceId
-    );
-
-    const workspaces: Models.DocumentList<Models.Document> =
-      await databases.listDocuments(DATABASE_ID, WORKSPACES_ID, [
-        Query.orderDesc("$createdAt"),
-        Query.contains("$id", workspacesIds),
-      ]);
-
-    return workspaces;
-  } catch {
+  if (members.total === 0) {
     return { documents: [], total: 0 };
   }
+
+  const workspacesIds: any[] = members.documents.map(
+    (member: Models.Document): any => member.workspaceId
+  );
+
+  const workspaces: Models.DocumentList<Models.Document> =
+    await databases.listDocuments(DATABASE_ID, WORKSPACES_ID, [
+      Query.orderDesc("$createdAt"),
+      Query.contains("$id", workspacesIds),
+    ]);
+
+  return workspaces;
 };
 
 interface GetWorkspaceProps {
@@ -43,34 +39,30 @@ interface GetWorkspaceProps {
 
 export const getWorkspace: ({
   workspaceId,
-}: GetWorkspaceProps) => Promise<Workspace | null> = async ({
+}: GetWorkspaceProps) => Promise<Workspace> = async ({
   workspaceId,
-}: GetWorkspaceProps): Promise<Workspace | null> => {
-  try {
-    const { databases, account } = await createSessionClient();
+}: GetWorkspaceProps): Promise<Workspace> => {
+  const { databases, account } = await createSessionClient();
 
-    const user: Models.User<Models.Preferences> = await account.get();
+  const user: Models.User<Models.Preferences> = await account.get();
 
-    const member: Models.Document = await getMember({
-      databases,
-      userId: user.$id,
-      workspaceId,
-    });
+  const member: Models.Document = await getMember({
+    databases,
+    userId: user.$id,
+    workspaceId,
+  });
 
-    if (!member) {
-      return null;
-    }
-
-    const workspace: Workspace = await databases.getDocument<Workspace>(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId
-    );
-
-    return workspace;
-  } catch {
-    return null;
+  if (!member) {
+    throw new Error("Unauthorized");
   }
+
+  const workspace: Workspace = await databases.getDocument<Workspace>(
+    DATABASE_ID,
+    WORKSPACES_ID,
+    workspaceId
+  );
+
+  return workspace;
 };
 
 interface GetWorkspaceInfoProps {
@@ -86,19 +78,15 @@ export const getWorkspaceInfo: ({
 }: GetWorkspaceInfoProps): Promise<{
   name: string;
 } | null> => {
-  try {
-    const { databases } = await createSessionClient();
+  const { databases } = await createSessionClient();
 
-    const workspace: Workspace = await databases.getDocument<Workspace>(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId
-    );
+  const workspace: Workspace = await databases.getDocument<Workspace>(
+    DATABASE_ID,
+    WORKSPACES_ID,
+    workspaceId
+  );
 
-    return {
-      name: workspace.name,
-    };
-  } catch {
-    return null;
-  }
+  return {
+    name: workspace.name,
+  };
 };

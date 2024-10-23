@@ -20,8 +20,6 @@ import {
 } from "./ui/sidebar";
 
 export const Projects: React.FC = (): ReactElement => {
-  const projectId = null; // TODO: Use the useProjectId hook
-
   const workspaceId: string = useWorkspaceId();
   const { data, isLoading } = useGetProjects({ workspaceId });
   const pathname: string = usePathname();
@@ -79,7 +77,7 @@ export const Projects: React.FC = (): ReactElement => {
               $updatedAt: string;
               $permissions: string[];
             }): ReactElement => {
-              const href: string = `/workspaces/${workspaceId}/projects/${projectId}`;
+              const href: string = `/workspaces/${workspaceId}/projects/${project.$id}`;
               const isActive: boolean = pathname === href;
 
               return (

@@ -64,9 +64,9 @@ export const CreateProjectForm: ({
     mutate(
       { form: finalValues },
       {
-        onSuccess: (): void => {
+        onSuccess: ({ data }): void => {
           form.reset();
-          // TODO: Redirect to project page
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
         },
       }
     );
