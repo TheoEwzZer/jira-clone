@@ -4,17 +4,19 @@ import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
 import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar";
 import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { ChevronsUpDown, Plus } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 import { ReactElement } from "react";
-import { RiAddCircleFill } from "react-icons/ri";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 
 export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
   const workspaceId: string = useWorkspaceId();
@@ -28,49 +30,104 @@ export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
     router.push(`/workspaces/${workspaceId}`);
   };
 
+  const currentWorkspace:
+    | {
+        [x: string]: any;
+        $id: string;
+        $collectionId: string;
+        $databaseId: string;
+        $createdAt: string;
+        $updatedAt: string;
+        $permissions: string[];
+      }
+    | undefined = workspaces?.documents.find(
+    (workspace: {
+      [x: string]: any;
+      $id: string;
+      $collectionId: string;
+      $databaseId: string;
+      $createdAt: string;
+      $updatedAt: string;
+      $permissions: string[];
+    }): boolean => workspace.$id === workspaceId
+  );
+
   return (
-    <div className="flex flex-col gap-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase text-neutral-500">Workspaces</p>
-        <RiAddCircleFill
-          onClick={open}
-          className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75"
-        />
-      </div>
-      <Select
-        onValueChange={onSelect}
-        value={workspaceId}
-      >
-        <SelectTrigger className="w-full bg-neutral-200 p-1 font-medium">
-          <SelectValue placeholder="No workspace selected" />
-        </SelectTrigger>
-        <SelectContent>
-          {workspaces?.documents.map(
-            (workspace: {
-              [x: string]: any;
-              $id: string;
-              $collectionId: string;
-              $databaseId: string;
-              $createdAt: string;
-              $updatedAt: string;
-              $permissions: string[];
-            }): ReactElement => (
-              <SelectItem
-                key={workspace.$id}
-                value={workspace.$id}
-              >
-                <div className="flex items-center justify-start gap-3 font-medium">
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                {currentWorkspace ? (
                   <WorkspaceAvatar
-                    name={workspace.name}
-                    image={workspace.imageUrl}
+                    name={currentWorkspace.name}
+                    image={currentWorkspace.imageUrl}
                   />
-                  <span className="truncate">{workspace.name}</span>
-                </div>
-              </SelectItem>
-            )
-          )}
-        </SelectContent>
-      </Select>
-    </div>
+                ) : (
+                  "logo"
+                )}
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">
+                  {currentWorkspace ? currentWorkspace.name : "name"}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-auto" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            align="start"
+            side="bottom"
+            sideOffset={4}
+          >
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              Workspaces
+            </DropdownMenuLabel>
+            {workspaces?.documents.map(
+              (workspace: {
+                [x: string]: any;
+                $id: string;
+                $collectionId: string;
+                $databaseId: string;
+                $createdAt: string;
+                $updatedAt: string;
+                $permissions: string[];
+              }): ReactElement => (
+                <DropdownMenuItem
+                  key={workspace.$id}
+                  onClick={(): void => onSelect(workspace.$id)}
+                  className="gap-2 p-2"
+                >
+                  <div className="flex items-center justify-center rounded-sm border">
+                    <WorkspaceAvatar
+                      name={workspace.name}
+                      image={workspace.imageUrl}
+                    />
+                  </div>
+                  {workspace.name}
+                </DropdownMenuItem>
+              )
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={open}
+            >
+              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                <Plus className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75" />
+              </div>
+              <div className="font-medium text-muted-foreground">
+                Create Workspace
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 };

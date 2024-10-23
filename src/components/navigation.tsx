@@ -13,6 +13,13 @@ import {
   GoHomeFill,
 } from "react-icons/go";
 import { IconType } from "react-icons/lib";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "./ui/sidebar";
 
 interface Route {
   label: string;
@@ -61,33 +68,44 @@ export const Navigation: () => ReactElement = (): ReactElement => {
   const pathname: string = usePathname();
 
   return (
-    <ul>
-      {routes.map((item: Route): ReactElement => {
-        const fullHref: string = `/workspaces/${workspaceId}${item.href}`;
-        const isActive: boolean = pathname === fullHref;
-        const Icon:
-          | IconType
-          | ForwardRefExoticComponent<
-              Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-            > = isActive ? item.activeIcon : item.icon;
+    <SidebarGroup>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {routes.map((route: Route): ReactElement => {
+            const fullHref: string = `/workspaces/${workspaceId}${route.href}`;
+            const isActive: boolean = pathname === fullHref;
+            const Icon:
+              | IconType
+              | ForwardRefExoticComponent<
+                  Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+                > = isActive ? route.activeIcon : route.icon;
 
-        return (
-          <Link
-            key={item.href}
-            href={fullHref}
-          >
-            <div
-              className={cn(
-                "flex items-center gap-2.5 rounded-md p-2.5 font-medium text-neutral-500 transition hover:text-primary",
-                isActive && "bg-white text-primary shadow-sm hover:opacity-100"
-              )}
-            >
-              <Icon className="size-5 text-neutral-500" />
-              {item.label}
-            </div>
-          </Link>
-        );
-      })}
-    </ul>
+            return (
+              <SidebarMenuItem
+                key={route.label}
+                className="rounded-md"
+              >
+                <SidebarMenuButton
+                  asChild
+                  className={cn(
+                    "flex w-full items-center gap-2.5 rounded-md py-2.5 font-medium text-neutral-500 transition hover:text-primary",
+                    isActive &&
+                      "bg-white text-primary shadow-sm hover:opacity-100"
+                  )}
+                >
+                  <Link
+                    key={route.href}
+                    href={fullHref}
+                  >
+                    <Icon className="size-5 text-neutral-500" />
+                    {route.label}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
   );
 };
