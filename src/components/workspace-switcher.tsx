@@ -59,7 +59,7 @@ export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="bg-neutral-200 p-1 hover:bg-neutral-200 active:bg-neutral-200 data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {currentWorkspace ? (
@@ -101,7 +101,7 @@ export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
                 <DropdownMenuItem
                   key={workspace.$id}
                   onClick={(): void => onSelect(workspace.$id)}
-                  className="gap-2 p-2"
+                  className="cursor-pointer gap-2 p-2"
                 >
                   <div className="flex items-center justify-center rounded-sm border">
                     <WorkspaceAvatar
@@ -115,11 +115,11 @@ export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="gap-2 p-2"
+              className="cursor-pointer gap-2 p-2"
               onClick={open}
             >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75" />
+                <Plus className="size-5 text-neutral-500 transition" />
               </div>
               <div className="font-medium text-muted-foreground">
                 Create Workspace
