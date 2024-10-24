@@ -19,7 +19,7 @@ import {
   SidebarMenuSkeleton,
 } from "./ui/sidebar";
 
-export const Projects: React.FC = (): ReactElement => {
+export const Projects: () => ReactElement = (): ReactElement => {
   const workspaceId: string = useWorkspaceId();
   const { data, isLoading } = useGetProjects({ workspaceId });
   const pathname: string = usePathname();
