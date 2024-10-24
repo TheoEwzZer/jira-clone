@@ -61,19 +61,17 @@ export const WorkspaceSwitcher: () => ReactElement = (): ReactElement => {
               size="lg"
               className="bg-neutral-200 p-1 hover:bg-neutral-200 active:bg-neutral-200 data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {currentWorkspace ? (
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-primary/10 text-sidebar-primary-foreground">
+                {currentWorkspace && (
                   <WorkspaceAvatar
                     name={currentWorkspace.name}
                     image={currentWorkspace.imageUrl}
                   />
-                ) : (
-                  "logo"
                 )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {currentWorkspace ? currentWorkspace.name : "name"}
+                  {currentWorkspace && currentWorkspace.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
