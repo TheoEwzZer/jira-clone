@@ -31,11 +31,8 @@ export const Projects: React.FC = (): ReactElement => {
         <SidebarGroupLabel className="text-xs uppercase text-neutral-500">
           Projects
         </SidebarGroupLabel>
-        <SidebarGroupAction>
-          <RiAddCircleFill
-            onClick={open}
-            className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75"
-          />
+        <SidebarGroupAction title="Add Project">
+          <RiAddCircleFill className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75" />
           <span className="sr-only">Add Project</span>
         </SidebarGroupAction>
         <SidebarGroupContent>
@@ -58,11 +55,11 @@ export const Projects: React.FC = (): ReactElement => {
       <SidebarGroupLabel className="text-xs uppercase text-neutral-500">
         Projects
       </SidebarGroupLabel>
-      <SidebarGroupAction>
-        <RiAddCircleFill
-          onClick={open}
-          className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75"
-        />
+      <SidebarGroupAction
+        title="Add Project"
+        onClick={open}
+      >
+        <RiAddCircleFill className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75" />
         <span className="sr-only">Add Project</span>
       </SidebarGroupAction>
       <SidebarGroupContent>
