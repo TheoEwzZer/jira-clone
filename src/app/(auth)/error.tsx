@@ -7,7 +7,7 @@ import { ReactElement } from "react";
 
 const ErrorPage: () => ReactElement = (): ReactElement => {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-y-2">
+    <div className="flex h-screen flex-col items-center justify-center gap-y-2">
       <AlertTriangle className="size-6 text-muted-foreground" />
       <p className="text-sm text-muted-foreground">Someting went wrong</p>
       <Button
