@@ -14,9 +14,9 @@ export const ResponsiveModal: (props: ResponsiveModalProps) => ReactElement = ({
   open,
   onOpenChange,
 }: ResponsiveModalProps): ReactElement => {
-  const isDesktop: boolean = useIsMobile();
+  const isMobile: boolean = useIsMobile();
 
-  if (isDesktop) {
+  if (!isMobile) {
     return (
       <Dialog
         open={open}
